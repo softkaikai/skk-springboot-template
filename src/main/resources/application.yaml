@@ -10,6 +10,12 @@ spring:
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+  rabbitmq:
+    host: 110.42.222.216     # RabbitMQ 地址
+    port: 5672           # 端口
+    username: admin       # 默认账号
+    password: 123456       # 默认密码
+    virtual-host: /       # 虚拟主机
   data:
     redis:
       # 服务地址

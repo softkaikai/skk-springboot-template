@@ -4,6 +4,7 @@ import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.example.springboot3.entity.Product;
 import org.example.springboot3.service.ProductService;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 class Account {
     String name = "123";
@@ -30,6 +33,8 @@ class Account {
 @RequestMapping("/product")
 @RequiredArgsConstructor
 public class ProductController {
+
+    private final RabbitTemplate rabbitTemplate;
 
     private final ProductService productService;
 
@@ -50,5 +55,19 @@ public class ProductController {
         System.out.println(stringRedisTemplate.hasKey("acctount"));
         System.out.println(redisTemplate.type("acctount"));
         return productService.list();
+    }
+
+    @GetMapping("/rabbit")
+    private String testRabbit() {
+        String queue1 = "direct.queue1";
+        String queue2 = "direct.queue1";
+        String exchangeName = "directExchange";
+        HashMap<String, String> message = new HashMap<>();
+        message.put("name", "kaikai");
+        message.put("age", "22");
+
+        rabbitTemplate.convertAndSend(exchangeName, "red", message);
+
+        return "rabbit";
     }
 }
